@@ -27,6 +27,35 @@ L'infrastructure est entièrement conteneurisée via `docker-compose.yml` :
 - Le dossier `./data` est monté dans les conteneurs pour injecter le CSV de test.
 - Le dossier `./scripts` contient les jobs PySpark (`script_sujet1.py`).
 
+## 🔄 Pipeline de Traitement (`script_sujet1.py`)
+
+Voici le flux exact d'exécution de notre script d'analyse, modélisant les étapes de notre travail de bout en bout :
+
+```mermaid
+graph TD
+    A[📂 1. Lecture du CSV depuis HDFS] --> B[💾 2. Conversion en Parquet]
+    B -->|Test 1| B1(Uncompressed)
+    B -->|Test 2| B2(Snappy)
+    B -->|Test 3| B3(Gzip)
+    B1 --> C[⏱️ 3. Mesure du temps d'écriture]
+    B2 --> C
+    B3 --> C
+    C --> D[📊 4. Benchmark CSV vs Parquet]
+    D --> E[🔎 5. Vérification du Plan d'Exécution]
+    E -.-> E1(Filter Pushdown)
+    E -.-> E2(Column Pruning)
+    E --> F[⚖️ 6. Analyse du Data Skew]
+    F --> G[🛑 7. Fermeture de Spark]
+
+    style A fill:#e3f2fd,stroke:#1e88e5,stroke-width:2px
+    style B fill:#e8f5e9,stroke:#43a047,stroke-width:2px
+    style C fill:#fff3e0,stroke:#fb8c00,stroke-width:2px
+    style D fill:#fbe9e7,stroke:#ff5722,stroke-width:2px
+    style E fill:#e0f7fa,stroke:#00acc1,stroke-width:2px
+    style F fill:#f3e5f5,stroke:#8e24aa,stroke-width:2px
+    style G fill:#ffebee,stroke:#e53935,stroke-width:2px
+```
+
 ##  Résultats & Benchmarks
 
 Les résultats obtenus démontrent un gain de performance massif en faveur du format Parquet compressé avec Snappy.
