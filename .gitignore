@@ -1,0 +1,41 @@
+# === DOSSIERS DE DONNÉES =======================
+# Ne JAMAIS uploader le gros CSV ou le dossier data en entier
+data/
+*.csv
+*.parquet
+
+# === VOLUMES DOCKER ============================
+# Les volumes persistants générés par HDFS
+volumes/
+hadoop_namenode/
+hadoop_datanode/
+
+# === SECRETS ET ENVIRONNEMENT ==================
+# Fichiers de variables d'environnement
+.env
+hadoop.env
+*.env
+
+# === PYTHON ET SPARK ===========================
+# Dossiers de cache et fichiers temporaires
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+venv/
+env/
+.venv/
+
+# === LOGS ======================================
+*.log
+logs/
+
+# === OS & IDE ==================================
+# Fichiers générés par les OS ou les IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

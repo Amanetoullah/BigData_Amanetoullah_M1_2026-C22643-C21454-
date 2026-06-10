@@ -1,0 +1,60 @@
+version: "3"
+
+services:
+  namenode:
+    image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    container_name: namenode
+    restart: always
+    ports:
+      - "9870:9870"  # Interface Web pour suivre l'état de HDFS et le stockage
+      - "9000:9000"  # Port RPC utilisé par Spark pour communiquer avec HDFS
+    volumes:
+      - hadoop_namenode:/hadoop/dfs/name
+      - ./data:/data  # Dossier local pour partager ton CSV de 2,09 Go
+    environment:
+      - CLUSTER_NAME=test
+    env_file:
+      - ./hadoop.env
+
+  datanode:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode
+    restart: always
+    depends_on:
+      - namenode
+    volumes:
+      - hadoop_datanode:/hadoop/dfs/data
+    env_file:
+      - ./hadoop.env
+
+  spark-master:
+    image: bde2020/spark-master:3.1.1-hadoop3.2
+    container_name: spark-master
+    depends_on:
+      - namenode
+      - datanode
+    ports:
+      - "8080:8080"  # Interface Web Spark Master (suivi des jobs)
+      - "7077:7077"  # Port de soumission du cluster Spark
+    environment:
+      - INIT_DAEMON_STEP=setup_spark
+    volumes:
+      - ./data:/data     # Accès aux fichiers bruts
+      - ./scripts:/scripts  # Emplacement de ton script PySpark d'optimisation Parquet
+
+  spark-worker:
+    image: bde2020/spark-worker:3.1.1-hadoop3.2
+    container_name: spark-worker
+    depends_on:
+      - spark-master
+    ports:
+      - "8081:8081"  # Interface Web du Worker
+    environment:
+      - "SPARK_MASTER=spark://spark-master:7077"
+    volumes:
+      - ./data:/data
+      - ./scripts:/scripts
+
+volumes:
+  hadoop_namenode:
+  hadoop_datanode:
