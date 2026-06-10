@@ -4,9 +4,9 @@
 [![Hadoop HDFS](https://img.shields.io/badge/Hadoop%20HDFS-3.2.1-blue)](https://hadoop.apache.org/)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED)](https://www.docker.com/)
 
-Ce projet a été réalisé dans le cadre de mon **Master 1 en Intelligence Artificielle**. L'objectif (Sujet 1) est de démontrer l'efficacité du format de stockage colonnaire (Apache Parquet) face au format ligne (CSV) sur des environnements distribués, avec un focus sur l'économie de la bande passante I/O, un enjeu crucial pour le traitement de volumes massifs (Big Data).
+Ce projet a été réalisé dans le cadre de mon **Master 1 en Intelligence Artificielle**. L'objectif  est de démontrer l'efficacité du format de stockage colonnaire (Apache Parquet) face au format ligne (CSV) sur des environnements distribués, avec un focus sur l'économie de la bande passante I/O, un enjeu crucial pour le traitement de volumes massifs (Big Data).
 
-## 🚀 Présentation du Projet
+##  Présentation du Projet
 
 Le traitement de très grands datasets en format CSV traditionnel sature rapidement les disques et le réseau lors des lectures analytiques. Ce projet explore la migration vers **Apache Parquet**, un format colonnaire fortement compressé.
 
@@ -19,7 +19,7 @@ Le traitement de très grands datasets en format CSV traditionnel sature rapidem
 4. Analyse de performance (Benchmarking) et preuve de concept du **Column Pruning** et **Predicate Pushdown**.
 5. Vérification de la bonne répartition de la charge (Data Skew).
 
-## 🏗️ Architecture Technique
+##  Architecture Technique
 
 L'infrastructure est entièrement conteneurisée via `docker-compose.yml` :
 - **HDFS NameNode & DataNode** (Hadoop 3.2.1) : Stockage distribué.
@@ -27,7 +27,7 @@ L'infrastructure est entièrement conteneurisée via `docker-compose.yml` :
 - Le dossier `./data` est monté dans les conteneurs pour injecter le CSV de test.
 - Le dossier `./scripts` contient les jobs PySpark (`script_sujet1.py`).
 
-## 📊 Résultats & Benchmarks
+##  Résultats & Benchmarks
 
 Les résultats obtenus démontrent un gain de performance massif en faveur du format Parquet compressé avec Snappy.
 
@@ -35,20 +35,20 @@ Les résultats obtenus démontrent un gain de performance massif en faveur du fo
 Temps d'exécution pour une requête d'agrégation filtrée (`SELECT AVG(fare_amount) FROM table WHERE VendorID = 1`) :
 - **Sur fichier CSV** : ~154 secondes.
 - **Sur Parquet Snappy** : ~5.29 secondes.
-- **🚀 Gain de vitesse : x29.16**
+- ** Gain de vitesse : x29.16**
 
-### 🔎 Explication Technique : Column Pruning & Predicate Pushdown
+###  Explication Technique : Column Pruning & Predicate Pushdown
 Grâce au plan d'exécution physique généré avec `df.explain(extended=True)`, nous avons pu prouver que :
 - **Column Pruning** : Spark ne lit sur le disque HDFS que les colonnes nécessaires à la requête (`fare_amount`, `VendorID`), ignorant le reste des 2 Go de données. Le CSV oblige Spark à lire la ligne entière à chaque fois.
 - **Predicate Pushdown** : Le filtre `VendorID = 1` est "poussé" directement au niveau du fichier Parquet. Spark ne remonte en mémoire que les blocs de données contenant `VendorID = 1`, limitant drastiquement les opérations réseau/mémoire.
 
-### ⚖️ Répartition de la charge (Data Skew)
+###  Répartition de la charge (Data Skew)
 L'analyse des blocs Parquet montre une **distribution homogène** :
 - Le dataset a été distribué sur **16 partitions HDFS**.
 - La taille moyenne d'une partition est d'environ **20 Mo**.
 - Aucun déséquilibre majeur (Data Skew) n'est à signaler, assurant qu'aucun DataNode ne créera de goulot d'étranglement réseau.
 
-## 🛠️ Instructions pour Lancer le Projet
+##  Instructions pour Lancer le Projet
 
 ### 1. Prérequis
 - Avoir Docker et Docker Compose installés.
@@ -76,6 +76,6 @@ Un script d'orchestration est fourni (`run_pipeline.bat` pour Windows ou `.sh` p
 bash run_pipeline.sh
 ```
 
-## 👨‍💻 Auteur
+##  Auteur
 Étudiant en Master 1 IA.
 Projet réalisé dans le cadre de l'évaluation Big Data - Ingénierie et Architecte du Stockage.
