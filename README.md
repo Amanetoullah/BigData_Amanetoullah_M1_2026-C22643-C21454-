@@ -76,6 +76,4 @@ Un script d'orchestration est fourni (`run_pipeline.bat` pour Windows ou `.sh` p
 bash run_pipeline.sh
 ```
 
-##  Auteur
-Étudiant en Master 1 IA.
-Projet réalisé dans le cadre de l'évaluation Big Data - Ingénierie et Architecte du Stockage.
+
