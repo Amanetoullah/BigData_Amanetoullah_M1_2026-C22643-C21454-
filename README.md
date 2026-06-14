@@ -106,3 +106,7 @@ bash run_pipeline.sh
 ```
 
 
+### 🔗 Le code source de la configuration de l'infrastructure du TP est disponible sur le dépôt suivant : 
+[Amanetoullah/hadoop-tp-cluster](https://github.com/Amanetoullah/hadoop-tp-cluster) 
+
+
